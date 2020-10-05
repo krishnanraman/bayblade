@@ -1,0 +1,39 @@
+---
+title: "bayblade.pdf"
+author: "Krishnan Raman"
+date: "10/5/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Client (Arjun Raman) submitted experiment with 4 replicates upon 8 expermental units. The data document time in motion of an experimental unit:BayBlade. Client wishes to know if the Bayblades are significantly different, and the fastest/slowest bayblades.
+The dataframe is shown below.
+
+```{r}
+bayblade<-read.csv("~/Desktop/514/bayblade.csv", sep=",", header=T)
+bayblade
+m<-as.matrix(bayblade)
+sapply( 1:8, function(x) { mean(m[,x]) })
+```
+Lets fit a linear model with 8 factors & perform Analysis of Variance.
+```{r}
+alldata<- c(m[,1],m[,2],m[,3],m[,4],m[,5],m[,6],m[,7],m[,8]) 
+groups<- c(rep(1,4),rep(2,4),rep(3,4),rep(4,4),rep(5,4),rep(6,4),rep(7,4),rep(8,4))
+model<-lm(alldata~as.factor(groups))
+summary(model)
+plot(model)
+```
+An analysis of variance is given below:
+```{r}
+anova(model)
+```
+
+Conclusion: The p-value 1.6e-14 is highly significant, indicating at a 5% level, the bayblades are significantly different from each other. The F test has a score of 71 >> 1, confirming the difference of the means.
+The fastest bayblade is group1 ( pg) with mean time: 79.25
+The slowest bayblade is group3 ( gr) with mean time: 79.25 - 58.5 = 20.75
+
+The Order statistics are:
+gr < y < p < b < yo < gg < o < pg
